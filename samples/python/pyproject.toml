@@ -23,6 +23,7 @@ packages = ["common", "hosts"]
 members = [
     "agents/crewai",
     "agents/google_adk",
+    "agents/fisica",
     "agents/langgraph",
     "agents/marvin",
     "hosts/cli",

@@ -1,3 +1,36 @@
 .DS_Store
-__pycache__
+
+# Ignorar entornos virtuales
+.venv/
+
+# Ignorar archivos compilados de Python
+*.pyc
+*.pyo
+__pycache__/
+
+# Ignorar archivos de configuración locales
 .env
+
+# Ignorar archivos de bloqueo
+*.lock
+
+# Ignorar archivos de caché
+*.cache
+
+# Ignorar archivos de logs
+*.log
+
+# Ignorar archivos de salida
+*.out
+*.tmp
+
+# Ignorar archivos de IDE
+.vscode/
+.idea/
+
+# Ignorar imágenes generadas
+images/*.png
+images/*.jpg
+
+# Ignorar dependencias de Node.js
+node_modules/

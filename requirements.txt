@@ -1,0 +1,9 @@
+PyPDF2
+qdrant-client
+transformers
+torch
+python-dotenv
+numpy
+google-adk
+langchain-google-genai
+langchain
