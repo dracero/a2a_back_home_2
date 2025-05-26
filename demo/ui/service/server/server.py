@@ -96,7 +96,7 @@ class ConversationServer:
     if isinstance(self.manager, ADKHostManager):
       self.manager.update_api_key(api_key)
 
-  def _create_conversation(self):
+  def _create_conversation(self, request: Request):
     c = self.manager.create_conversation()
     return CreateConversationResponse(result=c)
 
@@ -151,16 +151,16 @@ class ConversationServer:
       rval.append(m)
     return rval
 
-  async def _pending_messages(self):
+  async def _pending_messages(self, request: Request):
     return PendingMessageResponse(result=self.manager.get_pending_messages())
 
-  def _list_conversation(self):
+  def _list_conversation(self, request: Request):
     return ListConversationResponse(result=self.manager.conversations)
 
-  def _get_events(self):
+  def _get_events(self, request: Request):
     return GetEventResponse(result=self.manager.events)
 
-  def _list_tasks(self):
+  def _list_tasks(self, request: Request):
     return ListTaskResponse(result=self.manager.tasks)
 
   async def _register_agent(self, request: Request):
@@ -169,7 +169,7 @@ class ConversationServer:
     self.manager.register_agent(url)
     return RegisterAgentResponse()
 
-  async def _list_agents(self):
+  async def _list_agents(self, request: Request):
     return ListAgentResponse(result=self.manager.agents)
 
   def _files(self, file_id):
