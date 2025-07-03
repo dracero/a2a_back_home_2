@@ -1,3 +1,4 @@
+<h1>FALTA MANEJAR LA PARTE DE CORS Y VER POR QUE CADA VEZ QUE SE HACE uv sync SE PIERDE LA CONFIGURACION DE TODOS LOS AGENTES MENOS DEL SINCRONIZADO<h1>
 ![image info](images/A2A_banner.png)
 [![Apache License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 
