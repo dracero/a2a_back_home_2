@@ -5,9 +5,12 @@ description = "Agent2Agent samples"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "ag2[gemini]>=0.9.2",
     "httpx>=0.28.1",
     "httpx-sse>=0.4.0",
+    "jsonschema>=4.23.0",
     "jwcrypto>=1.5.6",
+    "pyautogen>=0.9",
     "pydantic>=2.10.6",
     "pyjwt>=2.10.1",
     "sse-starlette>=2.2.1",

@@ -1,7 +1,7 @@
 from common.server import A2AServer
 from common.types import AgentCard, AgentCapabilities, AgentSkill, MissingAPIKeyError
 from task_manager import AgentTaskManager
-from agent import AgentFisic  # Cambiado de ReimbursementAgent a AgentFisic
+from agent import PhysicsAgent
 import click
 import os
 import logging
@@ -47,14 +47,14 @@ def main(host, port, pdf_dir):
             description="Este agente proporciona respuestas e información sobre temas de física basados en documentos PDF.",
             url=f"http://{host}:{port}/",
             version="1.0.0",
-            defaultInputModes=AgentFisic.SUPPORTED_CONTENT_TYPES,
-            defaultOutputModes=AgentFisic.SUPPORTED_CONTENT_TYPES,
+            defaultInputModes=PhysicsAgent.SUPPORTED_CONTENT_TYPES,
+            defaultOutputModes=PhysicsAgent.SUPPORTED_CONTENT_TYPES,
             capabilities=capabilities,
             skills=[skill],
         )
         server = A2AServer(
             agent_card=agent_card,
-            task_manager=AgentTaskManager(agent=AgentFisic()),
+            task_manager=AgentTaskManager(agent=PhysicsAgent()),
             host=host,
             port=port,
         )

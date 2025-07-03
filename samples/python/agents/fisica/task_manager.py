@@ -18,7 +18,7 @@ from common.types import (
     SendTaskStreamingResponse,
 )
 from common.server.task_manager import InMemoryTaskManager
-from agent import AgentFisic  # Cambiado de ReimbursementAgent a AgentFisic
+from agent import PhysicsAgent
 import common.server.utils as utils
 from typing import Union
 import logging
@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 class AgentTaskManager(InMemoryTaskManager):
 
-    def __init__(self, agent: AgentFisic):  # Cambiado de ReimbursementAgent a AgentFisic
+    def __init__(self, agent: PhysicsAgent):
         super().__init__()
         self.agent = agent
 
@@ -94,25 +94,28 @@ class AgentTaskManager(InMemoryTaskManager):
                     message="An error occurred while streaming the response"
                 ),
             )
+
     def _validate_request(
         self, request: Union[SendTaskRequest, SendTaskStreamingRequest]
     ) -> None:
         task_send_params: TaskSendParams = request.params
         if not utils.are_modalities_compatible(
-            task_send_params.acceptedOutputModes, AgentFisic.SUPPORTED_CONTENT_TYPES  # Cambiado
+            task_send_params.acceptedOutputModes, PhysicsAgent.SUPPORTED_CONTENT_TYPES
         ):
             logger.warning(
                 "Unsupported output mode. Received %s, Support %s",
                 task_send_params.acceptedOutputModes,
-                AgentFisic.SUPPORTED_CONTENT_TYPES,  # Cambiado
+                PhysicsAgent.SUPPORTED_CONTENT_TYPES,
             )
             return utils.new_incompatible_types_error(request.id)
+
     async def on_send_task(self, request: SendTaskRequest) -> SendTaskResponse:
         error = self._validate_request(request)
         if error:
             return error
         await self.upsert_task(request.params)
         return await self._invoke(request)
+
     async def on_send_task_subscribe(
         self, request: SendTaskStreamingRequest
     ) -> AsyncIterable[SendTaskStreamingResponse] | JSONRPCResponse:
@@ -121,6 +124,7 @@ class AgentTaskManager(InMemoryTaskManager):
             return error
         await self.upsert_task(request.params)
         return self._stream_generator(request)
+
     async def _update_store(
         self, task_id: str, status: TaskStatus, artifacts: list[Artifact]
     ) -> Task:
@@ -131,13 +135,12 @@ class AgentTaskManager(InMemoryTaskManager):
                 logger.error(f"Task {task_id} not found for updating the task")
                 raise ValueError(f"Task {task_id} not found")
             task.status = status
-            #if status.message is not None:
-            #    self.task_messages[task_id].append(status.message)
             if artifacts is not None:
                 if task.artifacts is None:
                     task.artifacts = []
                 task.artifacts.extend(artifacts)
             return task
+
     async def _invoke(self, request: SendTaskRequest) -> SendTaskResponse:
         task_send_params: TaskSendParams = request.params
         query = self._get_user_query(task_send_params)
@@ -146,6 +149,7 @@ class AgentTaskManager(InMemoryTaskManager):
         except Exception as e:
             logger.error(f"Error invoking agent: {e}")
             raise ValueError(f"Error invoking agent: {e}")
+        
         parts = [{"type": "text", "text": result}]
         # Siempre completado para el agente de física
         task_state = TaskState.COMPLETED  
@@ -157,6 +161,7 @@ class AgentTaskManager(InMemoryTaskManager):
             [Artifact(parts=parts)],
         )
         return SendTaskResponse(id=request.id, result=task)
+
     def _get_user_query(self, task_send_params: TaskSendParams) -> str:
         part = task_send_params.message.parts[0]
         if not isinstance(part, TextPart):
